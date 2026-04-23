@@ -4,7 +4,11 @@ import MovieList from "./movieList";
 import Navbar from "./navbar";
 import "./index.css";
 
-const API_KEY = "644ccadadcacdab7824000208e60f417";
+const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+const BASE_URL = process.env.REACT_APP_TMDB_BASE_URL;
+
+console.log("ENV:", process.env.REACT_APP_TMDB_API_KEY);
+console.log("ALL ENV:", process.env);
 class App extends Component {
   constructor() {
     super();
@@ -14,19 +18,21 @@ class App extends Component {
       LikeCount: 0,
     };
   }
-  // to fetch movies through APIS
-  componentDidMount() {
-    this.fetchMovies();
-    this.fetchGenres();
-  }
 
-  genreMap = {}; // Global in your component
+  componentDidMount() {
+    this.init();
+  }
+  init = async () => {
+    await this.fetchGenres();
+    await this.fetchMovies();
+  };
+  genreMap = {};
 
   fetchGenres = async () => {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`
-    );
+    const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+
     const data = await res.json();
+
     data.genres.forEach((g) => {
       this.genreMap[g.id] = g.name;
     });
@@ -37,7 +43,7 @@ class App extends Component {
 
     for (let page = 1; page <= 3; page++) {
       const res = await fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`
+        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`,
       );
       const data = await res.json();
       const formatted = data.results.map((movie) => ({
