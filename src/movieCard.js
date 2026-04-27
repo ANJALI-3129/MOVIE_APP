@@ -1,3 +1,5 @@
+import "./movieCard.css";
+
 function MovieCard(props) {
   const { movies, addStars, decStars, toggleFav, toggleCart } = props;
   const { title, plot, price, rating, stars, fav, isInCart, poster, genres } =

@@ -1,14 +1,11 @@
 import { Component } from "react";
 import MovieList from "./movieList";
-// import { movies } from "./movieData";
 import Navbar from "./navbar";
 import "./index.css";
 
 const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 const BASE_URL = process.env.REACT_APP_TMDB_BASE_URL;
 
-console.log("ENV:", process.env.REACT_APP_TMDB_API_KEY);
-console.log("ALL ENV:", process.env);
 class App extends Component {
   constructor() {
     super();

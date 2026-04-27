@@ -8,17 +8,17 @@ class Navbar extends Component {
       <>
         <div className="nav">
           <div className="head">
-            MOVIE_APP
+            Movix
             <div className="cart-container">
               <div className="like-icon">
                 <i class="fa-regular fa-thumbs-up"></i>
-              </div>
-              <div className="like-count">{LikeCount}</div>
-              <div className="cart-icon">
-                <i class="fa-solid fa-cart-shopping"></i>
+                <span className="like-count">{LikeCount}</span>
               </div>
 
-              <div className="cart-count">{cartCount}</div>
+              <div className="cart-icon">
+                <i className="fa-solid fa-cart-shopping"></i>
+                <span className="cart-count">{cartCount}</span>
+              </div>
             </div>
           </div>
         </div>

@@ -1,69 +1,96 @@
-/* navbar.css */
-
+/* Navbar */
 .nav {
-  height: 70px;
-  background-color: #2e3235;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  width: 100%;
+  background: var(--card);
+  padding: 14px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  position: sticky;
   top: 0;
-  right: 0;
-  left: 0;
   z-index: 1000;
 }
 
+/* Layout */
 .head {
-  color: rgb(227, 227, 227);
-  font-size: 28px;
-  font-weight: 300;
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
 }
 
+/* Logo */
+.head::before {
+  content: "🎬";
+  margin-right: 8px;
+}
+
+.head {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Right side */
 .cart-container {
   display: flex;
   align-items: center;
-  position: relative;
+  gap: 20px;
 }
 
+.cart-icon,
+.like-icon {
+  position: relative;
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icons */
 .cart-icon i,
 .like-icon i {
-  font-size: 24px;
-  color: #ecf0f1;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  padding: 5px;
+  font-size: 20px;
+  color: var(--text);
+  transition: 0.2s ease;
 }
 
 .cart-icon i:hover {
-  transform: scale(1.1);
+  color: var(--primary);
+  transform: scale(1.2);
 }
 
-.cart-count {
+.like-icon i:hover {
+  color: var(--danger);
+  transform: scale(1.2);
+}
+
+.cart-count,
+.like-count {
   position: absolute;
-  top: -8px;
-  right: -12px;
-  background: rgb(108, 108, 108);
-  color: white;
+  top: 0;
+  right: 0;
+
+  transform: translate(60%, -60%);
+
+  background: var(--primary);
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  min-width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border-radius: 50%;
-  padding: 4px 7px;
-  font-size: 12px;
-  font-weight: bold;
+  border: 2px solid var(--card);
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .like-count {
-  position: absolute;
-  top: -10px;
-  right: 40px;
-  background: rgb(108, 108, 108);
-  color: rgb(244, 234, 234);
-  border-radius: 50%;
-  padding: 4px 7px;
-  font-size: 12px;
-  font-weight: bold;
+  background: var(--danger);
 }
