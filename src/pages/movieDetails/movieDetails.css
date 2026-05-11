@@ -1,0 +1,275 @@
+/* =========================
+   ROOT
+========================= */
+.movie-details {
+  position: relative;
+
+  min-height: 100vh;
+
+  width: 100%;
+
+  color: #fff;
+
+  font-family: "Poppins", sans-serif;
+
+  overflow-x: hidden;
+
+  overflow-y: auto; /* FIX */
+}
+
+/* =========================
+   BACKDROP
+========================= */
+.movie-backdrop {
+  position: fixed; /* IMPORTANT FIX */
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-size: cover;
+  background-position: center;
+
+  filter: blur(18px) brightness(0.28);
+
+  transform: scale(1.1);
+
+  z-index: -2;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+.movie-overlay {
+  position: fixed; /* IMPORTANT FIX */
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.92) 15%,
+    rgba(0, 0, 0, 0.75) 45%,
+    rgba(0, 0, 0, 0.45) 75%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+
+  z-index: -1;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+.movie-content {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: clamp(24px, 5vw, 60px);
+
+  padding: clamp(40px, 6vw, 90px);
+
+  padding-bottom: 120px; /* gives bottom scroll space */
+
+  width: 100%;
+
+  box-sizing: border-box;
+}
+
+.movie-poster {
+  width: clamp(220px, 25vw, 340px);
+  border-radius: 16px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9);
+  transition: all 0.4s ease;
+}
+
+.movie-poster:hover {
+  transform: scale(1.06) rotate(-1deg);
+}
+
+.movie-info {
+  max-width: 700px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+.movie-title {
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.movie-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.movie-rating {
+  background: #f5c518;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.movie-genres {
+  opacity: 0.8;
+  font-size: 13px;
+}
+
+.movie-info p {
+  margin: 5px 0;
+  font-size: clamp(13px, 1.5vw, 14px);
+  color: #ccc;
+}
+
+.movie-overview {
+  line-height: 1.7;
+  font-size: clamp(14px, 1.6vw, 16px);
+  margin: 18px 0;
+  color: #ddd;
+}
+
+.section-title {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.cast-grid {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.cast-card {
+  min-width: 100px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.cast-card:hover {
+  transform: translateY(-6px) scale(1.05);
+}
+
+.cast-card img {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 6px;
+}
+
+.cast-card p {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.trailer {
+  margin-top: 25px;
+}
+
+.trailer iframe {
+  width: 100%;
+  max-width: 750px;
+  aspect-ratio: 16/9;
+  border-radius: 14px;
+  border: none;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.9);
+}
+
+.cast-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.cast-grid::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.tagline {
+  font-style: italic;
+  color: #facc15;
+  margin-bottom: 10px;
+}
+
+.platforms {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.platforms img {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 10px;
+
+  object-fit: cover;
+
+  transition: 0.2s;
+}
+
+.platforms img:hover {
+  transform: scale(1.1);
+}
+@media (max-width: 900px) {
+  .movie-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .movie-overlay {
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  .movie-meta {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .movie-content {
+    padding: 30px 15px;
+  }
+
+  .movie-info {
+    padding: 18px;
+  }
+
+  .cast-card {
+    min-width: 90px;
+  }
+
+  .cast-card img {
+    height: 120px;
+  }
+}
+
+@media (max-width: 400px) {
+  .movie-title {
+    font-size: 1.4rem;
+  }
+
+  .movie-overview {
+    font-size: 13px;
+  }
+}

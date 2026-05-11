@@ -1,125 +1,152 @@
 import { Component } from "react";
-import MovieList from "./movieList";
-import Navbar from "./navbar";
+import { Routes, Route } from "react-router-dom";
+import Watchlist from "./pages/watchlist/watchlist";
+import Navbar from "./components/Navbar/navbar";
+import MovieList from "./components/movielist/movieList";
+import Loader from "./components/Loader/loader";
+import MovieDetails from "./pages/movieDetails/movieDetails";
+import Login from "./pages/login/login";
+import { db, auth } from "./firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+
+import { getGenres, getPopularMovies } from "./API/api";
+
 import "./index.css";
 
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-const BASE_URL = process.env.REACT_APP_TMDB_BASE_URL;
-
 class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      movies: [],
-      cartCount: 0,
-      LikeCount: 0,
-    };
-  }
-
-  componentDidMount() {
-    this.init();
-  }
-  init = async () => {
-    await this.fetchGenres();
-    await this.fetchMovies();
+  state = {
+    loading: true,
+    movies: [],
+    cartCount: 0,
+    user: null,
   };
+
   genreMap = {};
 
-  fetchGenres = async () => {
-    const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+  componentDidMount() {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        this.setState({ user });
+        await this.loadUserData(user.uid);
+      } else {
+        this.setState({ user: null, cartCount: 0 });
+      }
 
-    const data = await res.json();
+      await this.init();
+    });
+  }
 
-    data.genres.forEach((g) => {
-      this.genreMap[g.id] = g.name;
+  init = async () => {
+    try {
+      this.genreMap = await getGenres();
+
+      const movies = await getPopularMovies(this.genreMap);
+
+      const synced = await this.syncMovies(movies);
+
+      this.setState({
+        movies: synced,
+        loading: false,
+      });
+    } catch (err) {
+      console.error("Init Error:", err);
+      this.setState({ loading: false });
+    }
+  };
+
+  loadUserData = async (uid) => {
+    try {
+      const ref = doc(db, "users", uid);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        this.setState({
+          cartCount: snap.data().cart?.length || 0,
+        });
+      } else {
+        await setDoc(ref, { cart: [] });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  syncMovies = async (movies) => {
+    const { user } = this.state;
+    if (!user) return movies;
+
+    try {
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) return movies;
+
+      const { cart = [] } = snap.data();
+
+      return movies.map((m) => ({
+        ...m,
+        isInCart: cart.includes(m.id),
+      }));
+    } catch (err) {
+      console.error(err);
+      return movies;
+    }
+  };
+
+  handleAddToCart = async (movie) => {
+    const { user, movies } = this.state;
+
+    if (!user) return alert("Login first");
+
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+
+    let cart = snap.data()?.cart || [];
+
+    const updated = movies.map((m) =>
+      m.id === movie.id ? { ...m, isInCart: !m.isInCart } : m,
+    );
+
+    const updatedMovie = updated.find((m) => m.id === movie.id);
+
+    if (updatedMovie.isInCart) {
+      cart.push(movie.id);
+    } else {
+      cart = cart.filter((id) => id !== movie.id);
+    }
+
+    await updateDoc(ref, { cart });
+
+    this.setState({
+      movies: updated,
+      cartCount: cart.length,
     });
   };
 
-  fetchMovies = async () => {
-    const allMovies = [];
-
-    for (let page = 1; page <= 3; page++) {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`,
-      );
-      const data = await res.json();
-      const formatted = data.results.map((movie) => ({
-        id: movie.id,
-        title: movie.title,
-        plot: movie.overview,
-        price: Math.floor(Math.random() * 200) + 100,
-        poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-        rating: movie.vote_average.toFixed(1),
-        stars: 0,
-        fav: false,
-        isInCart: false,
-        genres: movie.genre_ids.map((id) => this.genreMap[id] || "Unknown"),
-      }));
-      allMovies.push(...formatted);
-    }
-
-    this.setState({ movies: allMovies });
-  };
-
-  addStars = (movie) => {
-    const { movies } = this.state;
-    const mid = movies.indexOf(movie);
-    if (movies[mid].stars >= 5) return;
-    movies[mid].stars += 0.5;
-    this.setState({ movies });
-  };
-
-  decStars = (movie) => {
-    const { movies } = this.state;
-    const mid = movies.indexOf(movie);
-    if (movies[mid].stars <= 0) return;
-    movies[mid].stars -= 0.5;
-    this.setState({ movies });
-  };
-
-  handleFav = (movie) => {
-    let { movies, LikeCount } = this.state;
-    const mid = movies.indexOf(movie);
-    movies[mid].fav = !movies[mid].fav;
-    this.setState({ movies });
-    if (movies[mid].fav) {
-      LikeCount += 1;
-    } else {
-      LikeCount -= 1;
-    }
-    this.setState({ movies, LikeCount });
-    console.log(LikeCount);
-  };
-
-  handleAddToCart = (movie) => {
-    let { movies, cartCount } = this.state;
-    const mid = movies.indexOf(movie);
-    movies[mid].isInCart = !movies[mid].isInCart;
-    // Update cart count correctly
-    if (movies[mid].isInCart) {
-      cartCount += 1;
-    } else {
-      cartCount -= 1;
-    }
-    this.setState({ movies, cartCount });
-  };
-
   render() {
-    const { movies } = this.state;
+    const { movies, loading, cartCount, user } = this.state;
+
     return (
       <>
-        <Navbar
-          cartCount={this.state.cartCount}
-          LikeCount={this.state.LikeCount}
-        />
+        <Navbar cartCount={cartCount} user={user} />
 
-        <MovieList
-          movies={movies}
-          addStars={this.addStars}
-          decStars={this.decStars}
-          toggleFav={this.handleFav}
-          toggleCart={this.handleAddToCart}
-        />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              loading ? (
+                <Loader />
+              ) : (
+                <MovieList movies={movies} toggleCart={this.handleAddToCart} />
+              )
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/movie/:id" element={<MovieDetails />} />
+          <Route path="/tv/:id" element={<MovieDetails />} />
+          <Route path="/watchlist" element={<Watchlist />} />
+        </Routes>
       </>
     );
   }

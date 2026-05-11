@@ -1,0 +1,23 @@
+.watchlist-page {
+  padding: 40px;
+
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.watchlist-page h1 {
+  margin-bottom: 20px;
+  color: white;
+}
+
+.watchlist-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.status {
+  text-align: center;
+  margin-top: 40px;
+  color: #ccc;
+}
