@@ -1,5 +1,5 @@
-import { Component } from "react";
-import { Routes, Route } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Watchlist from "./pages/watchlist/watchlist";
 import Navbar from "./components/Navbar/navbar";
 import MovieList from "./components/movielist/movieList";
@@ -14,56 +14,38 @@ import { getGenres, getPopularMovies } from "./API/api";
 
 import "./index.css";
 
-class App extends Component {
-  state = {
-    loading: true,
-    movies: [],
-    cartCount: 0,
-    user: null,
-  };
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [user, setUser] = useState(null);
 
-  genreMap = {};
+  const navigate = useNavigate();
+  const genreMapRef = useRef({});
 
-  componentDidMount() {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        this.setState({ user });
-        await this.loadUserData(user.uid);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        await loadUserData(firebaseUser.uid);
       } else {
-        this.setState({ user: null, cartCount: 0 });
+        setUser(null);
+        setCartCount(0);
       }
 
-      await this.init();
+      await init(firebaseUser);
     });
-  }
 
-  init = async () => {
-    try {
-      this.genreMap = await getGenres();
+    return () => unsubscribe();
+  });
 
-      const movies = await getPopularMovies(this.genreMap);
-
-      const synced = await this.syncMovies(movies);
-
-      this.setState({
-        movies: synced,
-        loading: false,
-      });
-    } catch (err) {
-      console.error("Init Error:", err);
-      this.setState({ loading: false });
-    }
-  };
-
-  loadUserData = async (uid) => {
+  const loadUserData = async (uid) => {
     try {
       const ref = doc(db, "users", uid);
       const snap = await getDoc(ref);
 
       if (snap.exists()) {
-        this.setState({
-          cartCount: snap.data().cart?.length || 0,
-        });
+        setCartCount(snap.data().cart?.length || 0);
       } else {
         await setDoc(ref, { cart: [] });
       }
@@ -72,12 +54,11 @@ class App extends Component {
     }
   };
 
-  syncMovies = async (movies) => {
-    const { user } = this.state;
-    if (!user) return movies;
+  const syncMovies = async (movies, firebaseUser) => {
+    if (!firebaseUser) return movies;
 
     try {
-      const ref = doc(db, "users", user.uid);
+      const ref = doc(db, "users", firebaseUser.uid);
       const snap = await getDoc(ref);
 
       if (!snap.exists()) return movies;
@@ -94,10 +75,27 @@ class App extends Component {
     }
   };
 
-  handleAddToCart = async (movie) => {
-    const { user, movies } = this.state;
+  const init = async (firebaseUser) => {
+    try {
+      genreMapRef.current = await getGenres();
 
-    if (!user) return alert("Login first");
+      const fetchedMovies = await getPopularMovies(genreMapRef.current);
+
+      const synced = await syncMovies(fetchedMovies, firebaseUser);
+
+      setMovies(synced);
+      setLoading(false);
+    } catch (err) {
+      console.error("Init Error:", err);
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async (movie) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
     const ref = doc(db, "users", user.uid);
     const snap = await getDoc(ref);
@@ -118,38 +116,37 @@ class App extends Component {
 
     await updateDoc(ref, { cart });
 
-    this.setState({
-      movies: updated,
-      cartCount: cart.length,
-    });
+    setMovies(updated);
+    setCartCount(cart.length);
   };
 
-  render() {
-    const { movies, loading, cartCount, user } = this.state;
+  return (
+    <>
+      <Navbar cartCount={cartCount} user={user} />
 
-    return (
-      <>
-        <Navbar cartCount={cartCount} user={user} />
-
-        <Routes>
-          <Route
-            path="/"
-            element={
-              loading ? (
-                <Loader />
-              ) : (
-                <MovieList movies={movies} toggleCart={this.handleAddToCart} />
-              )
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/movie/:id" element={<MovieDetails />} />
-          <Route path="/tv/:id" element={<MovieDetails />} />
-          <Route path="/watchlist" element={<Watchlist />} />
-        </Routes>
-      </>
-    );
-  }
+      <Routes>
+        <Route
+          path="/"
+          element={
+            loading ? (
+              <Loader />
+            ) : (
+              <MovieList movies={movies} toggleCart={handleAddToCart} />
+            )
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/movie/:id" element={<MovieDetails />} />
+        <Route path="/tv/:id" element={<MovieDetails />} />
+        <Route
+          path="/watchlist"
+          element={
+            <Watchlist cartCount={cartCount} setCartCount={setCartCount} />
+          }
+        />
+      </Routes>
+    </>
+  );
 }
 
 export default App;

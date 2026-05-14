@@ -57,7 +57,7 @@ const SearchBar = () => {
       };
 
       fetchSearch();
-    }, 400);
+    }, 1000);
 
     return () => clearTimeout(delay);
   }, [query]);
