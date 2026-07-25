@@ -1,23 +1,111 @@
-.watchlist-page {
-  padding: 40px;
+/* watchlist.css */
 
+.watchlist-page {
   min-height: 100vh;
-  background: #0f172a;
+  background: linear-gradient(to bottom, #111827, #000);
+  color: #fff;
+  padding: 100px 35px 50px;
 }
 
 .watchlist-page h1 {
-  margin-bottom: 20px;
-  color: white;
+  text-align: center;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.watchlist-page h1::after {
+  content: "";
+  display: block;
+  width: 90px;
+  height: 4px;
+  background: #e50914;
+  margin: 12px auto 0;
+  border-radius: 50px;
 }
 
 .watchlist-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: 28px;
+  justify-items: center;
+}
+
+/* Large Desktop */
+@media (min-width: 1400px) {
+  .watchlist-grid {
+    grid-template-columns: repeat(3, 420px);
+    justify-content: center;
+    gap: 30px;
+  }
+}
+
+/* Desktop */
+@media (max-width: 1399px) {
+  .watchlist-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .watchlist-grid {
+    grid-template-columns: repeat(2, minmax(360px, 1fr));
+    gap: 22px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .watchlist-page {
+    padding: 85px 20px 30px;
+  }
+
+  .watchlist-page h1 {
+    font-size: 2rem;
+  }
+
+  .watchlist-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .watchlist-page {
+    padding: 75px 12px 20px;
+  }
+
+  .watchlist-page h1 {
+    font-size: 1.6rem;
+  }
+
+  .watchlist-grid {
+    gap: 16px;
+  }
 }
 
 .status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 45vh;
+  font-size: 1.2rem;
+  color: #cfcfcf;
+}
+
+.empty-state {
   text-align: center;
-  margin-top: 40px;
-  color: #ccc;
+  margin-top: 80px;
+}
+
+.empty-state h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #aaa;
+  font-size: 1rem;
 }

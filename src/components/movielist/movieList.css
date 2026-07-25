@@ -1,69 +1,129 @@
-.movie-list {
+.movies-list-page {
   width: 100%;
   min-height: 100vh;
+  background: #111;
+  color: white;
+  padding: 100px 40px 40px;
+}
 
+.heading {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.heading h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.heading p {
+  color: #b3b3b3;
+  font-size: 1rem;
+  max-width: 650px;
+  margin: auto;
+}
+
+.movie-list-row {
   display: grid;
-
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-  gap: 28px;
-
-  padding: 30px;
-
-  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  justify-items: center;
 }
 
 .no-movies {
-  width: 100%;
-  min-height: 60vh;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 2rem;
-  font-weight: 600;
-
-  color: #ffffff;
-
-  letter-spacing: 1px;
-
   grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #999;
+  margin-top: 80px;
 }
 
-@media screen and (max-width: 1200px) {
-  .movie-list {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+@media (min-width: 1400px) {
+  .movies-list-page {
+    padding: 110px 70px 50px;
+  }
 
-    gap: 24px;
+  .movie-list-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 35px;
+  }
+
+  .heading h2 {
+    font-size: 3rem;
   }
 }
 
-@media screen and (max-width: 768px) {
-  .movie-list {
-    padding: 20px;
-
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-
-    gap: 20px;
+@media (max-width: 1200px) {
+  .movies-list-page {
+    padding: 95px 30px 35px;
   }
 
-  .no-movies {
-    font-size: 1.5rem;
+  .movie-list-row {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .heading h2 {
+    font-size: 2.2rem;
   }
 }
 
-@media screen and (max-width: 480px) {
-  .movie-list {
-    padding: 15px;
+@media (max-width: 768px) {
+  .movies-list-page {
+    padding: 85px 20px 30px;
+  }
 
+  .heading {
+    margin-bottom: 30px;
+  }
+
+  .heading h2 {
+    font-size: 1.9rem;
+  }
+
+  .heading p {
+    font-size: 0.95rem;
+  }
+
+  .movie-list-row {
     grid-template-columns: 1fr;
+    gap: 22px;
+  }
+}
 
+@media (max-width: 480px) {
+  .movies-list-page {
+    padding: 75px 12px 20px;
+  }
+
+  .heading h2 {
+    font-size: 1.6rem;
+  }
+
+  .heading p {
+    font-size: 0.85rem;
+  }
+
+  .movie-list-row {
     gap: 18px;
   }
 
   .no-movies {
-    font-size: 1.2rem;
-    text-align: center;
+    font-size: 1rem;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 360px) {
+  .movies-list-page {
+    padding: 70px 10px 20px;
+  }
+
+  .heading h2 {
+    font-size: 1.4rem;
+  }
+
+  .heading p {
+    font-size: 0.8rem;
   }
 }

@@ -1,128 +1,105 @@
-import { useState, useEffect, useRef } from "react";
+// import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Watchlist from "./pages/watchlist/watchlist";
 import Navbar from "./components/Navbar/navbar";
-import MovieList from "./components/movielist/movieList";
+import Home from "./pages/homepage/home";
 import Loader from "./components/Loader/loader";
 import MovieDetails from "./pages/movieDetails/movieDetails";
 import Login from "./pages/login/login";
-import { db, auth } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
-
-import { getGenres, getPopularMovies } from "./API/api";
-
+import MoviePage from "./pages/movies/moviepage";
+import Footer from "./components/footer/footer";
+import { useAuth } from "./context/AuthContext";
+// import { auth } from "./firebase";
+// import { onAuthStateChanged } from "firebase/auth";
+// import {
+//   getGenres,
+//   getPopularMovies,
+//   getTrendingMovies,
+//   getTVShows,
+// } from "./API/api";
+import { updateCart } from "./services/firebaseService";
 import "./index.css";
-
-function App() {
-  const [loading, setLoading] = useState(true);
-  const [movies, setMovies] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
-  const [user, setUser] = useState(null);
-
+import ProtectedRoute from "./components/protectedroute/protectedRoute";
+import { useMovie } from "./context/movieContext";
+const App = () => {
+  // const [cartCount, setCartCount] = useState(0);
+  // const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const genreMapRef = useRef({});
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        await loadUserData(firebaseUser.uid);
-      } else {
-        setUser(null);
-        setCartCount(0);
-      }
+  const { movies, loading, background, setCategories } = useMovie();
+  // const { user, cartCount, setCartCount } = useAuth();
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+  //     if (firebaseUser) {
+  //       setUser(firebaseUser);
+  //       const cart = await loadUserData(firebaseUser.uid);
+  //       setCartCount(cart.length);
+  //     } else {
+  //       setUser(null);
+  //       setCartCount(0);
+  //     }
+  //   });
 
-      await init(firebaseUser);
-    });
+  //   return () => unsubscribe();
+  // }, []);
 
-    return () => unsubscribe();
-  });
+  // useEffect(() => {
+  //   loadMovies(user);
+  // }, [categories, user]);
 
-  const loadUserData = async (uid) => {
-    try {
-      const ref = doc(db, "users", uid);
-      const snap = await getDoc(ref);
+  // const loadGenres = async () => {
+  //   if (Object.keys(genreMapRef.current).length === 0) {
+  //     genreMapRef.current = await getGenres();
+  //   }
+  // };
+  // const categoryAPI = {
+  //   popular: getPopularMovies,
+  //   trending: getTrendingMovies,
+  //   tv: getTVShows,
+  // };
+  // // const loadMovies = async (firebaseUser) => {
+  //   setLoading(true);
 
-      if (snap.exists()) {
-        setCartCount(snap.data().cart?.length || 0);
-      } else {
-        await setDoc(ref, { cart: [] });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //   try {
+  //     await loadGenres();
 
-  const syncMovies = async (movies, firebaseUser) => {
-    if (!firebaseUser) return movies;
+  //     const fetchedMovies = await categoryAPI[categories](genreMapRef.current);
 
-    try {
-      const ref = doc(db, "users", firebaseUser.uid);
-      const snap = await getDoc(ref);
+  //     const syncedMovies = await syncMovies(fetchedMovies, firebaseUser?.uid);
 
-      if (!snap.exists()) return movies;
+  //     setMovies(syncedMovies);
 
-      const { cart = [] } = snap.data();
+  //     if (syncedMovies.length) {
+  //       const randomIndex = Math.floor(Math.random() * syncedMovies.length);
 
-      return movies.map((m) => ({
-        ...m,
-        isInCart: cart.includes(m.id),
-      }));
-    } catch (err) {
-      console.error(err);
-      return movies;
-    }
-  };
+  //       setBackground(syncedMovies[randomIndex].backdrop);
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to load movies:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const init = async (firebaseUser) => {
-    try {
-      genreMapRef.current = await getGenres();
+  // const handleAddToCart = async (movie) => {
+  //   if (!user) {
+  //     navigate("/login");
 
-      const fetchedMovies = await getPopularMovies(genreMapRef.current);
+  //     return;
+  //   }
+  //   const isAdding = !movie.isInCart;
+  //   const updatedMovies = movies.map((m) =>
+  //     m.id === movie.id ? { ...m, isInCart: isAdding } : m,
+  //   );
+  //   const cart = await updateCart(user.uid, movie.id, isAdding);
 
-      const synced = await syncMovies(fetchedMovies, firebaseUser);
+  //   setMovies(updatedMovies);
 
-      setMovies(synced);
-      setLoading(false);
-    } catch (err) {
-      console.error("Init Error:", err);
-      setLoading(false);
-    }
-  };
-
-  const handleAddToCart = async (movie) => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-
-    let cart = snap.data()?.cart || [];
-
-    const updated = movies.map((m) =>
-      m.id === movie.id ? { ...m, isInCart: !m.isInCart } : m,
-    );
-
-    const updatedMovie = updated.find((m) => m.id === movie.id);
-
-    if (updatedMovie.isInCart) {
-      cart.push(movie.id);
-    } else {
-      cart = cart.filter((id) => id !== movie.id);
-    }
-
-    await updateDoc(ref, { cart });
-
-    setMovies(updated);
-    setCartCount(cart.length);
-  };
-
+  //   setCartCount(cart.length);
+  // };
   return (
     <>
-      <Navbar cartCount={cartCount} user={user} />
+      <Navbar setCategories={setCategories} />
 
       <Routes>
         <Route
@@ -131,22 +108,36 @@ function App() {
             loading ? (
               <Loader />
             ) : (
-              <MovieList movies={movies} toggleCart={handleAddToCart} />
+              <Home
+                movies={movies}
+                background={background}
+                setCategories={setCategories}
+              />
             )
           }
         />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login background={background} />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
         <Route path="/tv/:id" element={<MovieDetails />} />
         <Route
+          path="/movies/:category"
+          element={
+            <MoviePage /*toggleCart={handleAddToCart} categories={categories}*/
+            />
+          }
+        />
+        <Route
           path="/watchlist"
           element={
-            <Watchlist cartCount={cartCount} setCartCount={setCartCount} />
+            <ProtectedRoute>
+              <Watchlist />
+            </ProtectedRoute>
           }
         />
       </Routes>
+      <Footer />
     </>
   );
-}
+};
 
 export default App;

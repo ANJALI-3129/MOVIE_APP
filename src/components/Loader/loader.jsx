@@ -1,7 +1,7 @@
 import React from "react";
 import "./loader.css";
 
-function Loader() {
+const Loader=()=> {
   return (
     <div className="loader-container">
       <div className="spinner"></div>

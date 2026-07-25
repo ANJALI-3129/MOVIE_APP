@@ -1,84 +1,34 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import "./searchBar.css";
+import useSearch from "../../hooks/useSearch";
 
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-
-const SearchBar = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+const SearchBar = ({ background }) => {
+  const {
+    query,
+    setQuery,
+    results,
+    setResults,
+    loading,
+  } = useSearch();
 
   const navigate = useNavigate();
   const containerRef = useRef();
 
-
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      const fetchSearch = async () => {
-        try {
-          if (!query.trim()) {
-            setResults([]);
-            return;
-          }
-
-          setLoading(true);
-
-          const res = await fetch(
-            `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`
-          );
-
-          const data = await res.json();
-
-      
-          const filtered = data.results.filter(
-            (item) =>
-              (item.media_type === "movie" ||
-                item.media_type === "tv") &&
-              (item.poster_path || item.backdrop_path)
-          );
-
-        
-          const uniqueResults = filtered.filter(
-            (item, index, self) =>
-              index ===
-              self.findIndex(
-                (m) =>
-                  m.id === item.id &&
-                  m.media_type === item.media_type
-              )
-          );
-
-          setResults(uniqueResults);
-        } catch (err) {
-          console.error("Search Error:", err);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchSearch();
-    }, 1000);
-
-    return () => clearTimeout(delay);
-  }, [query]);
-
-  
-  const handleClick = (item) => {
-    if (!item?.id || !item?.media_type) return;
+  const handleClick = (movie) => {
+    if (!movie?.id || !movie?.mediaType) return;
 
     setQuery("");
     setResults([]);
 
-    navigate(`/${item.media_type}/${item.id}`);
+    navigate(`/${movie.mediaType}/${movie.id}`);
   };
-
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && results.length > 0) {
-      handleClick(results[0]); // go to first result
+      handleClick(results[0]);
     }
   };
-
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -91,74 +41,76 @@ const SearchBar = () => {
     };
 
     document.addEventListener("mousedown", handleOutsideClick);
+
     return () =>
       document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+  }, [setResults]);
 
   return (
-    <div className="search-container" ref={containerRef}>
-   
-      <input
-        type="text"
-        className="search-input"
-        placeholder="Search movies, K-drama, series..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
+    <div
+      className="search-Background"
+      style={{ backgroundImage: `url(${background})` }}
+    >
+      <div className="hero-overlay"></div>
 
-   
-      {(query || loading) && (
-        <div className="search-dropdown">
-          
-      
-          {loading && <p className="status">Searching...</p>}
+      <div className="hero-content">
+        <h1>Discover Your Next Favorite Movie</h1>
+        <p>Search millions of Movies, TV Shows & K-Dramas</p>
+      </div>
 
-      
-          {!loading && query && results.length === 0 && (
-            <p className="status">No results found</p>
-          )}
+      <div className="search-container" ref={containerRef}>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search movies, TV shows, K-dramas..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
 
-        
-          {results.map((item) => (
-            <div
-              key={`${item.media_type}-${item.id}`}
-              className="search-item"
-              onClick={() => handleClick(item)}
-            >
-          
-              <img
-                src={
-                  item.poster_path
-                    ? `https://image.tmdb.org/t/p/w200${item.poster_path}`
-                    : "https://via.placeholder.com/50x75?text=No+Image"
-                }
-                alt={item.title || item.name}
-              />
+        {(query || loading) && (
+          <div className="search-dropdown">
+            {loading && (
+              <p className="status">Searching...</p>
+            )}
 
-         
-              <div className="search-info">
-                <h4>{item.title || item.name}</h4>
-
-                <p>
-                  {item.media_type === "movie"
-                    ? "🎬 Movie"
-                    : "📺 TV Series"}
+            {!loading &&
+              query &&
+              results.length === 0 && (
+                <p className="status">
+                  No results found.
                 </p>
+              )}
 
-          
-                <span>
-                  {(
-                    item.release_date ||
-                    item.first_air_date ||
-                    ""
-                  ).slice(0, 4)}
-                </span>
+            {results.map((movie) => (
+              <div
+                key={`${movie.mediaType}-${movie.id}`}
+                className="search-item"
+                onClick={() => handleClick(movie)}
+              >
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                />
+
+                <div className="search-info">
+                  <h4>{movie.title}</h4>
+
+                  <p>
+                    {movie.mediaType === "movie"
+                      ? "🎬 Movie"
+                      : "📺 TV Series"}
+                  </p>
+
+                  <span>
+                    {movie.releaseDate?.slice(0, 4)}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

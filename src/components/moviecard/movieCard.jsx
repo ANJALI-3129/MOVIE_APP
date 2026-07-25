@@ -1,20 +1,21 @@
 import "./movieCard.css";
 import { useNavigate } from "react-router-dom";
-
-function MovieCard({ movies, toggleCart }) {
+import { useMovie } from "../../context/movieContext";
+const MovieCard=({ movie })=> {
   
   const navigate = useNavigate();
-
-  const {
-    title,
-    name,
-    plot,
-    rating,
-    isInCart,
-    poster,
-    genres,
-    id,
-  } = movies;
+  const {toggleCart}= useMovie();
+const {
+  title,
+  name,
+  plot,
+  rating,
+  isInCart,
+  poster,
+  genres,
+  id,
+  mediaType,
+} = movie;
 
  
   const movieName = title || name;
@@ -23,63 +24,48 @@ function MovieCard({ movies, toggleCart }) {
     <div className="main">
       <div className="movie-card-container">
         
-        <div className="movie-card">
+      <div className="movie-card">
+  <img
+    src={poster}
+    alt={movieName}
+    className="movie-poster"
+  />
 
-       
-          <div className="left">
-            <img
-              alt={movieName}
-              src={poster}
-              className="movie-poster"
-            />
-          </div>
+  <div className="movie-info">
+    <h2>{movieName}</h2>
 
-          <div className="right">
+    <span className="rating">⭐ {rating}</span>
 
-            <div className="movie-title">
-              {movieName}
-            </div>
+    <p className="genres">
+      {genres?.join(" • ")}
+    </p>
 
-            <div className="movie-genres">
-             Genre: {genres?.join(" • ")}
-            </div>
+    <p className="plot">
+      {plot}
+    </p>
 
-            <div className="movie-rating">
-              Rating:  {rating}
-            </div>
+    <div className="buttons">
+      <button className="details-btn"
+        onClick={() => navigate(`/${mediaType}/${id}`)}
+      >
+        View Details
+      </button>
 
-            <div className="movie-plot">
-              {plot}
-            </div>
-
-            <div className="movie-actions">
-
-              <button
-                className="details-btn"
-                onClick={() => navigate(`/movie/${id}`)}
-              >
-                View Details
-              </button>
-
-              <button
-                className={
-                  isInCart
-                    ? "remove-watchlist-btn"
-                    : "watchlist-btn"
-                }
-                onClick={() => toggleCart(movies)}
-              >
-                {isInCart
-                  ? "Remove Watchlist"
-                  : "Add Watchlist"}
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
+      <button
+        className={
+          isInCart
+            ? "remove-watchlist-btn"
+            : "watchlist-btn"
+        }
+        onClick={() => toggleCart(movie)}
+      >
+        {isInCart
+          ? "✓ Watchlisted"
+          : "+ Watchlist"}
+      </button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   );

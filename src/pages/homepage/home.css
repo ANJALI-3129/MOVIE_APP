@@ -1,0 +1,58 @@
+/* home.css */
+
+.home-layout {
+  min-height: 100vh;
+  background: #0f0f0f;
+  color: white;
+  padding-bottom: 50px;
+}
+
+/* Space between SearchBar and first row */
+.home-layout > section:first-of-type {
+  margin-top: 40px;
+}
+
+/* Every HorizontalRow */
+.home-layout .row-section {
+  margin: 40px 0;
+}
+
+/* Optional fade effect at top */
+.home-layout::before {
+  content: "";
+  display: block;
+  height: 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .home-layout {
+    padding-bottom: 40px;
+  }
+
+  .home-layout .row-section {
+    margin: 35px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-layout {
+    padding-bottom: 30px;
+  }
+
+  .home-layout .row-section {
+    margin: 30px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-layout {
+    padding-bottom: 20px;
+  }
+
+  .home-layout .row-section {
+    margin: 25px 0;
+  }
+}

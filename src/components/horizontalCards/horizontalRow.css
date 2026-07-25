@@ -1,0 +1,227 @@
+/* =========================
+   Horizontal Row
+========================= */
+
+.row-section {
+  margin: 40px 0;
+  padding: 0 30px;
+}
+
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.row-header h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.view-all {
+  color: #00bfff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.view-all:hover {
+  color: #fff;
+}
+
+/* =========================
+   Movie Row
+========================= */
+
+.Hori-movie-row {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.Hori-movie-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================
+   Card
+========================= */
+
+.Hori-movieCard {
+  flex: 0 0 auto;
+  width: 180px;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.3s;
+}
+
+.Hori-movieCard:hover {
+  transform: scale(1.06);
+}
+
+.Hori-movieCard img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: 0.3s;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.Hori-movieCard:hover img {
+  box-shadow: 0 12px 28px rgba(0, 191, 255, 0.35);
+}
+
+.Hori-movieCard p {
+  margin-top: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.4;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   Large Desktop
+========================= */
+
+@media (min-width: 1400px) {
+  .row-section {
+    padding: 0 60px;
+  }
+
+  .Hori-movieCard {
+    width: 220px;
+  }
+
+  .Hori-movieCard img {
+    height: 330px;
+  }
+
+  .row-header h2 {
+    font-size: 2rem;
+  }
+}
+
+/* =========================
+   Desktop
+========================= */
+
+@media (max-width: 1200px) {
+  .row-section {
+    padding: 0 25px;
+  }
+
+  .Hori-movieCard {
+    width: 170px;
+  }
+
+  .Hori-movieCard img {
+    height: 255px;
+  }
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width: 768px) {
+  .row-section {
+    margin: 30px 0;
+    padding: 0 18px;
+  }
+
+  .row-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .view-all {
+    font-size: 0.9rem;
+  }
+
+  .Hori-movie-row {
+    gap: 14px;
+  }
+
+  .Hori-movieCard {
+    width: 145px;
+  }
+
+  .Hori-movieCard img {
+    height: 215px;
+  }
+
+  .Hori-movieCard p {
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 480px) {
+  .row-section {
+    padding: 0 12px;
+    margin: 25px 0;
+  }
+
+  .row-header {
+    margin-bottom: 12px;
+  }
+
+  .row-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .view-all {
+    font-size: 0.8rem;
+  }
+
+  .Hori-movie-row {
+    gap: 12px;
+  }
+
+  .Hori-movieCard {
+    width: 120px;
+  }
+
+  .Hori-movieCard img {
+    height: 180px;
+    border-radius: 10px;
+  }
+
+  .Hori-movieCard p {
+    font-size: 0.75rem;
+    margin-top: 8px;
+  }
+}
+
+/* =========================
+   Small Phones
+========================= */
+
+@media (max-width: 360px) {
+  .Hori-movieCard {
+    width: 105px;
+  }
+
+  .Hori-movieCard img {
+    height: 155px;
+  }
+
+  .row-header h2 {
+    font-size: 1.1rem;
+  }
+}
