@@ -20,12 +20,14 @@
   inset: 0;
   background:
     linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.95),
-      rgba(0, 0, 0, 0.65),
-      rgba(0, 0, 0, 0.35)
+      90deg,
+      rgba(0, 0, 0, 0.96) 0%,
+      rgba(0, 0, 0, 0.9) 30%,
+      rgba(0, 0, 0, 0.75) 55%,
+      rgba(0, 0, 0, 0.45) 75%,
+      rgba(0, 0, 0, 0.25) 100%
     ),
-    linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.2));
 }
 .movie-details-title,
 .movie-details-info p,
@@ -33,7 +35,21 @@
 .tagline {
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
 }
+.movie-details-info {
+  flex: 1;
 
+  background: rgba(56, 55, 55, 0.35);
+  backdrop-filter: blur(12px);
+
+  padding: 30px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.movie-details-info p {
+  color: #ececec;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
 .movie-content {
   position: relative;
   z-index: 2;
