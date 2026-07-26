@@ -1,5 +1,5 @@
 // import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Watchlist from "./pages/watchlist/watchlist";
 import Navbar from "./components/Navbar/navbar";
 import Home from "./pages/homepage/home";
@@ -23,7 +23,6 @@ import { useMovie } from "./context/movieContext";
 const App = () => {
   // const [cartCount, setCartCount] = useState(0);
   // const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
   const { movies, loading, background, setCategories } = useMovie();
   // const { user, cartCount, setCartCount } = useAuth();
