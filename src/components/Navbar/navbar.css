@@ -80,6 +80,10 @@
   width: 100%;
 }
 
+/* =========================
+   RIGHT SECTION
+========================= */
+
 .right-section {
   display: flex;
   align-items: center;
@@ -157,6 +161,10 @@
   transform: translateY(-2px);
 }
 
+/* =========================
+   USER
+========================= */
+
 .user-section {
   display: flex;
   align-items: center;
@@ -203,27 +211,82 @@
     padding: 8px 18px;
   }
 }
+
 @media (max-width: 768px) {
+  .nav {
+    padding: 15px 20px;
+  }
+
   .head {
     position: relative;
-    display: flex;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-size: 1.7rem;
   }
 
   .menu-toggle {
     display: block;
+  }
+
+  .Movie {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 28px;
-    z-index: 1001;
+    top: 70px;
+    left: 0;
+    width: 100%;
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    background: rgba(0, 0, 0, 0.95);
+    padding: 25px 0;
+    border-radius: 0 0 12px 12px;
+  }
+
+  .Movie.active {
+    display: flex;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0.15)
+    );
+    backdrop-filter: blur(5px);
+  }
+
+  .Movie li {
+    font-size: 17px;
   }
 
   .right-section {
-    margin-right: 45px; /* space for hamburger */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .right-section button {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .cart-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
   }
 }
+
+/* =========================
+   SMALL MOBILE
+========================= */
 
 @media (max-width: 480px) {
   .logo {
