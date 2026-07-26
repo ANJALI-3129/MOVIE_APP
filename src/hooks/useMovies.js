@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -33,7 +33,7 @@ const useMovies = () => {
     }
   };
 
-  const loadMovies = async () => {
+  const loadMovies = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -59,9 +59,9 @@ const useMovies = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [categories, user]);
 
-  const loadWatchlist = async () => {
+  const loadWatchlist = useCallback(async () => {
     if (!user) {
       setWatchlist([]);
       return;
@@ -102,7 +102,7 @@ const useMovies = () => {
     } finally {
       setWatchlistLoading(false);
     }
-  };
+  }, [user, setCartCount]);
 
   const toggleCart = async (movie) => {
     if (!user) {
@@ -146,11 +146,11 @@ const useMovies = () => {
 
   useEffect(() => {
     loadMovies();
-  }, [categories, user]);
+  }, [loadMovies]);
 
   useEffect(() => {
     loadWatchlist();
-  }, [user]);
+  }, [loadWatchlist]);
 
   return {
     movies,

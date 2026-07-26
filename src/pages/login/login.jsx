@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import firebase from "firebase/compat/app";
+
 
 
 const Login = ({background}) => {

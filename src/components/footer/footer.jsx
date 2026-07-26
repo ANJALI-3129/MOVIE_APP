@@ -38,21 +38,22 @@ const Footer = () => {
           <h3>Follow Us</h3>
 
           <div className="social-icons">
-            <a href="#">
+           <button>
               <FaGithub />
-            </a>
+              </button>
+          
 
-            <a href="#">
+           <button>
               <FaLinkedin />
-            </a>
-
-            <a href="#">
+            </button>
+           <button>
               <FaInstagram />
-            </a>
+         </button>
 
-            <a href="#">
+           <button>
               <FaYoutube />
-            </a>
+              </button>
+            
           </div>
         </div>
       </div>

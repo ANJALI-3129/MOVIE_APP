@@ -8,7 +8,7 @@ import MovieDetails from "./pages/movieDetails/movieDetails";
 import Login from "./pages/login/login";
 import MoviePage from "./pages/movies/moviepage";
 import Footer from "./components/footer/footer";
-import { useAuth } from "./context/AuthContext";
+
 // import { auth } from "./firebase";
 // import { onAuthStateChanged } from "firebase/auth";
 // import {
@@ -17,7 +17,6 @@ import { useAuth } from "./context/AuthContext";
 //   getTrendingMovies,
 //   getTVShows,
 // } from "./API/api";
-import { updateCart } from "./services/firebaseService";
 import "./index.css";
 import ProtectedRoute from "./components/protectedroute/protectedRoute";
 import { useMovie } from "./context/movieContext";
