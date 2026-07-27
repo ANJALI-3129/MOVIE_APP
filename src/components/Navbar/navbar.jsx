@@ -53,12 +53,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div
-          className="menu-toggle"
-          onClick={() => setMenuOpen((prev) => !prev)}
-        >
-          ☰
-        </div>
+      
 
         {/* Navigation */}
         <ul className={menuOpen ? "Movie active" : "Movie"}>
@@ -76,6 +71,12 @@ const Navbar = () => {
         </ul>
 
         <div className="right-section">
+            <div
+          className="menu-toggle"
+          onClick={() => setMenuOpen((prev) => !prev)}
+        >
+          ☰
+        </div>
           <div
             className="cart-icon"
             onClick={() => {
